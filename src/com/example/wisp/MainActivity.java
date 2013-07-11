@@ -33,16 +33,19 @@ public class MainActivity extends Activity {
         gpsGet= new GPSGrabber(this);
         b.setOnClickListener(new View.OnClickListener() {
 			MediaRecorder med;
-			@Override
+			@Override //This is called when the button is pressed
 			public void onClick(View v) {
+				//increments clicked to tell whether it should record or stop recording based on even/odd
 				clicked++;
 				if (clicked%2!=0){
+					//sets up all the recording shit
 					MediaRecorder med= new MediaRecorder();
 					med.setAudioSource(MediaRecorder.AudioSource.MIC);
 					med.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 					med.setOutputFile(getCacheDir().getAbsolutePath()+File.separator+"cachedsound.3gpp");
 					med.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 					try {
+						//starts recording
 						med.prepare();
 						med.start();
 					} catch (IllegalStateException e) {
@@ -54,26 +57,31 @@ public class MainActivity extends Activity {
 					}// TODO Auto-generated method stub
 				}
 				else{
+					//stops recording
 					med.stop();
 					med.release();
+					//uses gpsGet's get location call to get location, writes location to byte array
 					Location loc=gpsGet.getLocation();
 				    ByteArrayOutputStream out = new ByteArrayOutputStream();
 				    ObjectOutputStream os;
 					try {
 						os = new ObjectOutputStream(out);
 						os.writeObject(loc);
+						os.close();
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					//Gets the sound and initializes HTTPclient
 					File file = new File(getCacheDir().getAbsolutePath(),"cachedsound.3gpp");
 					HttpClient httpclient = new DefaultHttpClient();
 					HttpPost httppost = new HttpPost("http://serverlocation");
 					 
 					try {
 					  MultipartEntity entity = new MultipartEntity();
-					 
+					 //adds location and sound to multipartentity then writes multipartentity to server
 					  entity.addPart("location", new ByteArrayBody(out.toByteArray(), "location"));
+					  out.close();
 					  entity.addPart("sound", new FileBody(file));
 					  httppost.setEntity(entity);
 					  HttpResponse response = httpclient.execute(httppost);

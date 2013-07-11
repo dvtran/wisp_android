@@ -21,12 +21,15 @@ public class GPSGrabber {
 	}
 	protected void getGPS(){
 		try{
+			//creates location manager, checks if GPS is on
 			locationManager= (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 			gpsOn=locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 			if (gpsOn){
+				//if GPS is on, gets the location
 				location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 			}
 			else{
+				//otherwise, gets them to change their settings and tries GPS again.
 				changeOptions();
 				getGPS();
 			}
@@ -35,6 +38,7 @@ public class GPSGrabber {
 			e.printStackTrace();
 		}
 	}
+	//Builds a toast that has an option to go to the settings for location and one to cancel
 	private void changeOptions(){
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
