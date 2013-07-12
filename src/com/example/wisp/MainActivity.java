@@ -2,6 +2,7 @@ package com.example.wisp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
@@ -74,17 +75,13 @@ public class MainActivity extends Activity {
 					}
 					//Gets the sound and initializes HTTPclient
 					File file = new File(getCacheDir().getAbsolutePath(),"cachedsound.3gpp");
-					HttpClient httpclient = new DefaultHttpClient();
-					HttpPost httppost = new HttpPost("http://serverlocation");
-					 
 					try {
 					  MultipartEntity entity = new MultipartEntity();
 					 //adds location and sound to multipartentity then writes multipartentity to server
 					  entity.addPart("location", new ByteArrayBody(out.toByteArray(), "location"));
 					  out.close();
 					  entity.addPart("sound", new FileBody(file));
-					  httppost.setEntity(entity);
-					  HttpResponse response = httpclient.execute(httppost);
+					  ObjectOutputStream oos= new ObjectOutputStream(new FileOutputStream(getCacheDir().getAbsolutePath()+File.separator+"cachedshit.wis"));
 					} catch (ClientProtocolException e) {
 					} catch (IOException e) {
 					}
