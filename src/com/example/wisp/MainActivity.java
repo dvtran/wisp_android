@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
 					File file = new File(getCacheDir().getAbsolutePath(),"cachedsound.3gpp");
 					try {
 					  MultipartEntity entity = new MultipartEntity();
-					 //adds location and sound to multipartentity then writes multipartentity to server
+					 //adds location and sound to multipartentity then writes multipartentity to cache
 					  entity.addPart("location", new ByteArrayBody(out.toByteArray(), "location"));
 					  out.close();
 					  entity.addPart("sound", new FileBody(file));
