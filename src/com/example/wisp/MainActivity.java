@@ -6,17 +6,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,21 +21,26 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends Activity {
-	int clicked=0;
+	boolean clicked=false;
+	boolean stored=false;
+	boolean playing =false;
 	GPSGrabber gpsGet;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button b= (Button) findViewById(R.id.button1);
+        Button b2= (Button) findViewById(R.id.button2);
         gpsGet= new GPSGrabber(this);
         b.setOnClickListener(new View.OnClickListener() {
 			MediaRecorder med;
+		    MediaPlayer mp;
+
 			@Override //This is called when the button is pressed
 			public void onClick(View v) {
 				//increments clicked to tell whether it should record or stop recording based on even/odd
-				clicked++;
-				if (clicked%2!=0){
+				clicked=!clicked;
+				if (clicked&&!stored){
 					//sets up all the recording shit
 					MediaRecorder med= new MediaRecorder();
 					med.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -57,37 +59,56 @@ public class MainActivity extends Activity {
 						e.printStackTrace();
 					}// TODO Auto-generated method stub
 				}
-				else{
+				else if(!clicked&&!stored){
 					//stops recording
 					med.stop();
 					med.release();
 					//uses gpsGet's get location call to get location, writes location to byte array
 					Location loc=gpsGet.getLocation();
-				    ByteArrayOutputStream out = new ByteArrayOutputStream();
-				    ObjectOutputStream os;
-					try {
-						os = new ObjectOutputStream(out);
-						os.writeObject(loc);
-						os.close();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					//Gets the sound and initializes HTTPclient
-					File file = new File(getCacheDir().getAbsolutePath(),"cachedsound.3gpp");
-					try {
-					  MultipartEntity entity = new MultipartEntity();
-					 //adds location and sound to multipartentity then writes multipartentity to cache
-					  entity.addPart("location", new ByteArrayBody(out.toByteArray(), "location"));
-					  out.close();
-					  entity.addPart("sound", new FileBody(file));
-					  ObjectOutputStream oos= new ObjectOutputStream(new FileOutputStream(getCacheDir().getAbsolutePath()+File.separator+"cachedshit.wis"));
-					} catch (ClientProtocolException e) {
-					} catch (IOException e) {
-					}
+					stored=true;
+				}
+				else if (!playing){
+				    mp = new MediaPlayer();
+
+				    try {
+				        mp.setDataSource(getCacheDir().getAbsolutePath()+File.separator+"cachedsound.3gpp");
+				        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+							
+							@Override
+							public void onCompletion(MediaPlayer mp) {
+								mp.stop();
+								playing=false;
+								
+							}
+						});
+				        mp.prepare();
+				        playing=true;
+				        mp.start();
+				    } catch (Exception e) {
+				        e.printStackTrace();
+				    }
+				}
+				else{
+					mp.stop();
+					playing=false;
 				}
 			}
 		});
+        b2.setOnClickListener(new View.OnClickListener() {
+        	@Override
+			public void onClick(View v) {
+        	    MediaPlayer mp = new MediaPlayer();
+
+        	    try {
+        	        mp.setDataSource(getCacheDir().getAbsolutePath()+File.separator+"cachedsound.3gpp");
+        	        mp.prepare();
+        	        mp.start();
+        	    } catch (Exception e) {
+        	        e.printStackTrace();
+        	    }
+			}
+
+        });
     }
 
     @Override

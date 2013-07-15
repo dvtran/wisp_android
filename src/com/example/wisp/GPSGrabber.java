@@ -12,6 +12,7 @@ public class GPSGrabber {
 	protected LocationManager locationManager;
 	private final Context context;
 	private boolean gpsOn=false;
+	private boolean netOn=false;
 	private Location location;
 	public GPSGrabber(Context con){
 		context=con;
@@ -24,9 +25,13 @@ public class GPSGrabber {
 			//creates location manager, checks if GPS is on
 			locationManager= (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 			gpsOn=locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+			netOn=locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 			if (gpsOn){
 				//if GPS is on, gets the location
 				location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			}
+			else if (netOn){
+				location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 			}
 			else{
 				//otherwise, gets them to change their settings and tries GPS again.
