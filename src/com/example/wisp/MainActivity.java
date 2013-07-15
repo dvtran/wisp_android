@@ -1,15 +1,21 @@
 package com.example.wisp;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import com.example.wisp.R;
+import java.io.ObjectOutputStream;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 
 public class MainActivity extends Activity {
@@ -20,9 +26,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         Button b= (Button) findViewById(R.id.button1);
         Button b2= (Button) findViewById(R.id.button2);
+        Button b3= (Button) findViewById(R.id.button3);
         gpsGet= new GPSGrabber(this);
         b.setOnClickListener(new View.OnClickListener() {
 			MediaRecorder med;
@@ -57,6 +65,18 @@ public class MainActivity extends Activity {
 					med.release();
 					//uses gpsGet's get location call to get location, writes location to byte array
 					loc=gpsGet.getLocation();
+					try {
+						ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(getCacheDir().getAbsolutePath()+File.separator+"loc.gps"));
+						out.writeObject(loc);
+						out.flush();
+						out.close();
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					stored=true;
 				}
 				else{
@@ -99,6 +119,29 @@ public class MainActivity extends Activity {
 			}
 
         });
+        final Activity main=this;
+        b3.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				new AlertDialog.Builder(main)
+				.setTitle("Delete Sound")
+				.setMessage("Do you want to delete your sound?")
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+				    public void onClick(DialogInterface dialog, int whichButton) {
+				        File f= new File(getCacheDir().getAbsolutePath()+File.separator+"loc.gps");
+				        f.delete();
+				        f= new File(getCacheDir().getAbsolutePath()+File.separator+"cachedsound.3gpp");
+				        f.delete();
+				        f=null;
+				        
+				    }})
+				 .setNegativeButton(android.R.string.no, null).show();
+				
+			}
+		});
     }
 
     @Override
