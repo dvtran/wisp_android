@@ -1,72 +1,48 @@
 package com.example.wisp;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.location.Location;
-import android.location.LocationManager;
-import android.provider.Settings;
+import android.os.Bundle;
 
-public class GPSGrabber {
-	protected LocationManager locationManager;
-	private final Context context;
-	private boolean gpsOn=false;
-	private boolean netOn=false;
-	private Location location;
-	public GPSGrabber(Context con){
-		context=con;
-	}
-	public Location getLocation(){
-		return location;
-	}
-	protected void getGPS(){
-		try{
-			//creates location manager, checks if GPS is on
-			locationManager= (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-			gpsOn=locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-			netOn=locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-			if (gpsOn){
-				//if GPS is on, gets the location
-				location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			}
-			else if (netOn){
-				location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-			}
-			else{
-				//otherwise, gets them to change their settings and tries GPS again.
-				changeOptions();
-				getGPS();
-			}
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+
+public class GPSGrabber
+	implements
+	GooglePlayServicesClient.ConnectionCallbacks,
+	GooglePlayServicesClient.OnConnectionFailedListener {
+		LocationClient mLocationClient;
+		Location mCurrentLocation;
+		MainActivity main;
+
+	    public GPSGrabber(MainActivity man){
+			main=man;
+
+	    
+	    }
+	    public Location getLocation(){
+	        mLocationClient.connect();
+	    	mLocationClient = new LocationClient(main, this, this);
+	        mCurrentLocation = mLocationClient.getLastLocation();
+	        mLocationClient.disconnect();
+	        return mCurrentLocation;
+	    }
+		@Override
+		public void onConnectionFailed(ConnectionResult result) {
+			// TODO Auto-generated method stub
+			
 		}
-		catch(Exception e){
-			e.printStackTrace();
+
+		@Override
+		public void onConnected(Bundle connectionHint) {
+			// TODO Auto-generated method stub
+			
 		}
-	}
-	//Builds a toast that has an option to go to the settings for location and one to cancel
-	private void changeOptions(){
-		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
-	    alertDialog.setTitle("GPS is off");
-
-	    alertDialog.setMessage("Please enable GPS by going to the settings Menu");
-
-	    alertDialog.setPositiveButton("Settings",
-	            new DialogInterface.OnClickListener() {
-	                public void onClick(DialogInterface dialog, int which) {
-	                    Intent intent = new Intent(
-	                            Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-	                    context.startActivity(intent);
-	                }
-	            });
-
-	    alertDialog.setNegativeButton("Cancel",
-	            new DialogInterface.OnClickListener() {
-	                public void onClick(DialogInterface dialog, int which) {
-	                    dialog.cancel();
-	                }
-	            });
-	    alertDialog.show();
-	}
+		@Override
+		public void onDisconnected() {
+			// TODO Auto-generated method stub
+			
+		}
 
 }

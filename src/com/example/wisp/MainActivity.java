@@ -1,16 +1,8 @@
 package com.example.wisp;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.FileBody;
-
+import com.example.wisp.R;
 import android.app.Activity;
 import android.location.Location;
 import android.media.MediaPlayer;
@@ -34,7 +26,7 @@ public class MainActivity extends Activity {
         gpsGet= new GPSGrabber(this);
         b.setOnClickListener(new View.OnClickListener() {
 			MediaRecorder med;
-		    MediaPlayer mp;
+		    Location loc;
 
 			@Override //This is called when the button is pressed
 			public void onClick(View v) {
@@ -64,10 +56,22 @@ public class MainActivity extends Activity {
 					med.stop();
 					med.release();
 					//uses gpsGet's get location call to get location, writes location to byte array
-					Location loc=gpsGet.getLocation();
+					loc=gpsGet.getLocation();
 					stored=true;
 				}
-				else if (!playing){
+				else{
+					//Upload
+					//new Uploader(loc, getCacheDir().getAbsoluteFile());
+				}
+
+			}
+		});
+        b2.setOnClickListener(new View.OnClickListener() {
+        	@Override
+			public void onClick(View v) {
+        	    MediaPlayer mp = new MediaPlayer();
+        	    playing=false;
+				if (!playing){
 				    mp = new MediaPlayer();
 
 				    try {
@@ -89,23 +93,9 @@ public class MainActivity extends Activity {
 				    }
 				}
 				else{
-					mp.stop();
+					mp.pause();
 					playing=false;
 				}
-			}
-		});
-        b2.setOnClickListener(new View.OnClickListener() {
-        	@Override
-			public void onClick(View v) {
-        	    MediaPlayer mp = new MediaPlayer();
-
-        	    try {
-        	        mp.setDataSource(getCacheDir().getAbsolutePath()+File.separator+"cachedsound.3gpp");
-        	        mp.prepare();
-        	        mp.start();
-        	    } catch (Exception e) {
-        	        e.printStackTrace();
-        	    }
 			}
 
         });
