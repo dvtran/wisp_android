@@ -7,6 +7,10 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/Downloads/httpcomponents-client-4.2.5/lib/httpmime-4.2.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/Downloads/appengine-gcs-client-0.2.jar"/>
-	<classpathentry kind="lib" path="/google-play-services_lib/libs/google-play-services.jar"/>
+	<classpathentry exported="true" kind="lib" path="/google-play-services_lib/libs/google-play-services.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/commons-io-2.4/commons-io-2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/lib/aws-android-sdk-1.6.0-s3.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/lib/aws-android-sdk-1.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/lib/aws-android-sdk-1.6.0-core.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

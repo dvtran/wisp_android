@@ -15,4 +15,10 @@ public class Storage implements Serializable {
 		location=loc;
 		sound=s;
 	}
+	public Location getLocation(){
+		return location;
+	}
+	public Byte[] getSound(){
+		return sound;
+	}
 }

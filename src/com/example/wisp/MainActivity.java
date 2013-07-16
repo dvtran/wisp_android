@@ -1,10 +1,13 @@
 package com.example.wisp;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+
+import org.apache.commons.io.IOUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,6 +20,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+
+import com.example.wisputil.Storage;
 
 public class MainActivity extends Activity {
 	boolean clicked=false;
@@ -66,17 +71,28 @@ public class MainActivity extends Activity {
 					//uses gpsGet's get location call to get location, writes location to byte array
 					loc=gpsGet.getLocation();
 					try {
-						ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(getCacheDir().getAbsolutePath()+File.separator+"loc.gps"));
-						out.writeObject(loc);
+						FileInputStream in= new FileInputStream(getCacheDir().getAbsolutePath()+File.separator+"cachedsound.3gpp");
+						byte[] sou;
+					
+						sou = IOUtils.toByteArray(in);
+					
+						Byte[] sound = new Byte[sou.length];
+						for (int i = 0; i < sou.length; i++)
+						{
+							sound[i] = Byte.valueOf(sou[i]);
+						}
+						Storage stor= new Storage(loc, sound);
+						ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(getCacheDir().getAbsolutePath()+File.separator+"stored.wip"));
+						out.writeObject(stor);
 						out.flush();
 						out.close();
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					stored=true;
 				}
 				else{
