@@ -1,5 +1,6 @@
 package com.example.wisp;
 
+import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -13,9 +14,9 @@ public class GPSGrabber
 	GooglePlayServicesClient.OnConnectionFailedListener {
 		LocationClient mLocationClient;
 		Location mCurrentLocation;
-		MainActivity main;
+		Activity main;
 
-	    public GPSGrabber(MainActivity man){
+	    public GPSGrabber(Activity man){
 			main=man;
 
 	    

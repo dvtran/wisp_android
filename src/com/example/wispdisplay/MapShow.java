@@ -5,9 +5,11 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.Window;
 
+import com.example.wisp.GPSGrabber;
 import com.example.wisp.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapShow extends Activity {
 	private GoogleMap map;
@@ -24,6 +26,8 @@ public class MapShow extends Activity {
 		fragmentTransaction.commit();
 		setUpMap();
 		map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+		LocationGetter locdate= new LocationGetter();
+		locdate.execute(new GPSGrabber(this).getLocation());
 	}
 	private void setUpMap() {
 	    // Do a null check to confirm that we have not already instantiated the map.
@@ -36,5 +40,8 @@ public class MapShow extends Activity {
 
 	        }
 	    }
+	}
+	public void addMark(MarkerOptions mark){
+		map.addMarker(mark);
 	}
 }
