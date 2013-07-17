@@ -83,6 +83,7 @@ public class MainActivity extends Activity {
 						}
 						Storage stor= new Storage(loc, sound);
 						ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(getCacheDir().getAbsolutePath()+File.separator+"stored.wip"));
+						out.flush();
 						out.writeObject(stor);
 						out.flush();
 						out.close();
@@ -117,6 +118,7 @@ public class MainActivity extends Activity {
 							@Override
 							public void onCompletion(MediaPlayer mp) {
 								mp.stop();
+								mp.reset();
 								playing=false;
 								
 							}

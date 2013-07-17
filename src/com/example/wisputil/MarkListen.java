@@ -1,6 +1,9 @@
 package com.example.wisputil;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
 import android.location.Location;
@@ -9,6 +12,7 @@ import android.media.MediaPlayer;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.example.wisp.MainActivity;
 import com.example.wisp.Uploader;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.model.Marker;
@@ -16,11 +20,13 @@ import com.google.android.gms.maps.model.Marker;
 public class MarkListen implements OnMarkerClickListener {
 	HashMap<Location, String> revmap;
 	AmazonS3Client s3Client;
-	public MarkListen(HashMap<String, Location> map){
+	MainActivity main;
+	public MarkListen(HashMap<String, Location> map, MainActivity man){
 		for (int i=0; i<map.size(); i++){
 			revmap.put(map.get(""+i), ""+i);
 		}
 		s3Client =   new AmazonS3Client( new BasicAWSCredentials( Uploader.id, Uploader.key ) );
+		main=man;
 
 
 
@@ -36,6 +42,13 @@ public class MarkListen implements OnMarkerClickListener {
 		try {
 			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(Uploader.bucket, x)).getObjectContent());
 			Storage stor=(Storage) in.readObject();
+			in.close();
+			ObjectOutputStream out=new ObjectOutputStream(new FileOutputStream(main.getCacheDir().getAbsolutePath()+File.separator+"cachesound.3ogg"));
+			out.flush();
+			out.writeObject(stor.getSound());
+			mp.setDataSource(main.getCacheDir().getAbsolutePath()+File.separator+"cachesound.3ogg");
+			mp.start();
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

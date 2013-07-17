@@ -43,6 +43,7 @@ public class Uploader{
 			PutObjectRequest por= new PutObjectRequest(bucket, ""+i, new File(main.getCacheDir().getAbsolutePath()+File.separator+"stored.wip"));
 			s3Client.putObject(por);
 			ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(main.getCacheDir().getAbsolutePath()+File.separator+"manifest.man"));
+			out.flush();
 			out.writeObject(map);
 			out.flush();
 			out.close();
