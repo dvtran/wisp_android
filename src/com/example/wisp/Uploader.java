@@ -20,9 +20,9 @@ import com.example.wisputil.Storage;
 
 
 public class Uploader{
-	public static final String key="blank";
-	public static final String id= "id";
-	public static final String bucket= "bucket";
+	public static final String key="HAIlFtZEDI3hRTgOf1MwBRzNst7oiBnLYGqNODUi";
+	public static final String id= "AKIAJYSNO2HXNLWXF72Q";
+	public static final String bucket= "wispdata";
 	MainActivity main;
 	public Uploader(MainActivity man){
 		main=man;

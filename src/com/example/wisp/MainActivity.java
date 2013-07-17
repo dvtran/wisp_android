@@ -27,6 +27,7 @@ public class MainActivity extends Activity {
 	boolean clicked=false;
 	boolean stored=false;
 	boolean playing =false;
+	Uploader upload= new Uploader(this);
 	GPSGrabber gpsGet;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +99,8 @@ public class MainActivity extends Activity {
 				}
 				else{
 					//Upload
-					//new Uploader(loc, getCacheDir().getAbsoluteFile());
+
+					
 				}
 
 			}

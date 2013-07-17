@@ -26,10 +26,10 @@ public class MapShow extends Activity {
 		fragmentTransaction.commit();
 		setUpMap();
 		map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-		LocationGetter locdate= new LocationGetter();
+		LocationGetter locdate= new LocationGetter(mMapFragment, this);
 		locdate.execute(new GPSGrabber(this).getLocation());
 	}
-	private void setUpMap() {
+	protected void setUpMap() {
 	    // Do a null check to confirm that we have not already instantiated the map.
 	    if (map == null) {
 	        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))

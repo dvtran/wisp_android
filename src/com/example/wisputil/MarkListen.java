@@ -15,10 +15,11 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.example.wisp.MainActivity;
 import com.example.wisp.Uploader;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 public class MarkListen implements OnMarkerClickListener {
-	HashMap<Location, String> revmap;
+	HashMap<Location, String> revmap= new HashMap<Location, String>(50);
 	AmazonS3Client s3Client;
 	MainActivity main;
 	public MarkListen(HashMap<String, Location> map, MainActivity man){
@@ -31,6 +32,9 @@ public class MarkListen implements OnMarkerClickListener {
 
 
 		
+	}
+	public static LatLng toLatLng(Location loc){
+		return new LatLng(loc.getLatitude(), loc.getLongitude());
 	}
 	@Override
 	public boolean onMarkerClick(Marker marker) {
@@ -46,6 +50,7 @@ public class MarkListen implements OnMarkerClickListener {
 			ObjectOutputStream out=new ObjectOutputStream(new FileOutputStream(main.getCacheDir().getAbsolutePath()+File.separator+"cachesound.3ogg"));
 			out.flush();
 			out.writeObject(stor.getSound());
+			out.close();
 			mp.setDataSource(main.getCacheDir().getAbsolutePath()+File.separator+"cachesound.3ogg");
 			mp.start();
 			
