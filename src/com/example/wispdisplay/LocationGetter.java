@@ -46,7 +46,7 @@ public class LocationGetter extends AsyncTask<Location, MarkerOptions, Void> {
             	ObjectInputStream in = new ObjectInputStream(obj.getDataInputStream());
             	Storage stor= (Storage)in.readObject();
             	MarkerOptions mark= new MarkerOptions();
-            	mark.position(MarkListen.toLatLng(stor.getLocation()));
+            	mark.position(stor.getLocation());
             	mark.draggable(false);
             	mark.visible(false);
             	map.addMark(mark);

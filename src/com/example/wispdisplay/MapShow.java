@@ -5,7 +5,6 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.Window;
 
-import com.example.wisp.GPSGrabber;
 import com.example.wisp.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -27,7 +26,6 @@ public class MapShow extends Activity {
 		setUpMap();
 		map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 		LocationGetter locdate= new LocationGetter(mMapFragment, this);
-		locdate.execute(new GPSGrabber(this).getLocation());
 	}
 	protected void setUpMap() {
 	    // Do a null check to confirm that we have not already instantiated the map.

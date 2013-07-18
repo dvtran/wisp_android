@@ -2,21 +2,23 @@ package com.example.wisputil;
 
 import java.io.Serializable;
 
-import android.location.Location;
+import com.google.android.gms.maps.model.LatLng;
 
 public class Storage implements Serializable {
+
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7703373910652239983L;
-	Location location;
+	private static final long serialVersionUID = 471779142407741010L;
+	SerializableLatLng location;
 	Byte[] sound;
-	public Storage(Location loc, Byte[] s){
+	public Storage(SerializableLatLng loc, Byte[] s){
 		location=loc;
 		sound=s;
 	}
-	public Location getLocation(){
-		return location;
+	public LatLng getLocation(){
+		return location.readResolve();
 	}
 	public Byte[] getSound(){
 		return sound;
