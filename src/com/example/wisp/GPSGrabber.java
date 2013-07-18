@@ -3,6 +3,9 @@ package com.example.wisp;
 import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -22,22 +25,30 @@ public class GPSGrabber
 	    
 	    }
 	    public Location getLocation(){
-	        mLocationClient.connect();
+	    	mCurrentLocation=null;
 	    	mLocationClient = new LocationClient(main, this, this);
-	        mCurrentLocation = mLocationClient.getLastLocation();
-	        mLocationClient.disconnect();
+	        mLocationClient.connect();
+	        while (mCurrentLocation==null){
+	        	Log.d("RunningLocation", "FML");
+	            Handler handler = new Handler(); 
+	            handler.postDelayed(new Runnable() { 
+	                 public void run() { 
+	                 } 
+	            }, 50); 
+	        }
 	        return mCurrentLocation;
 	    }
 		@Override
 		public void onConnectionFailed(ConnectionResult result) {
-			// TODO Auto-generated method stub
-			
+			Toast toast = Toast.makeText(main.getApplicationContext(), "Unable to Connect to Google Play Services", Toast.LENGTH_SHORT);
+			toast.setDuration(5);
+			toast.show();
 		}
 
 		@Override
 		public void onConnected(Bundle connectionHint) {
-			// TODO Auto-generated method stub
-			
+	        mCurrentLocation = mLocationClient.getLastLocation();
+	        mLocationClient.disconnect();			
 		}
 
 		@Override

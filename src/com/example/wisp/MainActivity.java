@@ -16,6 +16,7 @@ import android.location.Location;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -39,19 +40,17 @@ public class MainActivity extends Activity {
         Button b3= (Button) findViewById(R.id.button3);
         gpsGet= new GPSGrabber(this);
         b.setOnClickListener(new View.OnClickListener() {
-			MediaRecorder med;
 		    Location loc;
+			MediaRecorder med= new MediaRecorder();
 
 			@Override //This is called when the button is pressed
 			public void onClick(View v) {
-				//increments clicked to tell whether it should record or stop recording based on even/odd
 				clicked=!clicked;
 				if (clicked&&!stored){
 					//sets up all the recording shit
-					MediaRecorder med= new MediaRecorder();
-					med.setAudioSource(MediaRecorder.AudioSource.MIC);
+					med.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
 					med.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-					med.setOutputFile(getCacheDir().getAbsolutePath()+File.separator+"cachedsound.3gpp");
+					med.setOutputFile(getCacheDir()+File.separator+"cachedsound.3gpp");
 					med.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 					try {
 						//starts recording
@@ -64,15 +63,17 @@ public class MainActivity extends Activity {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}// TODO Auto-generated method stub
+					Log.d("Player", med.toString());
 				}
 				else if(!clicked&&!stored){
 					//stops recording
+					Log.d("playerstop", med.toString());
 					med.stop();
 					med.release();
 					//uses gpsGet's get location call to get location, writes location to byte array
 					loc=gpsGet.getLocation();
 					try {
-						FileInputStream in= new FileInputStream(getCacheDir().getAbsolutePath()+File.separator+"cachedsound.3gpp");
+						FileInputStream in= new FileInputStream(getCacheDir()+File.separator+"cachedsound.3gpp");
 						byte[] sou;
 					
 						sou = IOUtils.toByteArray(in);
@@ -83,7 +84,7 @@ public class MainActivity extends Activity {
 							sound[i] = Byte.valueOf(sou[i]);
 						}
 						Storage stor= new Storage(loc, sound);
-						ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(getCacheDir().getAbsolutePath()+File.separator+"stored.wip"));
+						ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(getCacheDir()+File.separator+"stored.wip"));
 						out.flush();
 						out.writeObject(stor);
 						out.flush();
@@ -114,7 +115,7 @@ public class MainActivity extends Activity {
 				    mp = new MediaPlayer();
 
 				    try {
-				        mp.setDataSource(getCacheDir().getAbsolutePath()+File.separator+"cachedsound.3gpp");
+				        mp.setDataSource(getCacheDir()+File.separator+"cachedsound.3gpp");
 				        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 							
 							@Override
@@ -151,9 +152,9 @@ public class MainActivity extends Activity {
 				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
 				    public void onClick(DialogInterface dialog, int whichButton) {
-				        File f= new File(getCacheDir().getAbsolutePath()+File.separator+"loc.gps");
+				        File f= new File(getCacheDir()+File.separator+"loc.gps");
 				        f.delete();
-				        f= new File(getCacheDir().getAbsolutePath()+File.separator+"cachedsound.3gpp");
+				        f= new File(getCacheDir()+File.separator+"cachedsound.3gpp");
 				        f.delete();
 				        f=null;
 				        

@@ -47,11 +47,11 @@ public class MarkListen implements OnMarkerClickListener {
 			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(Uploader.bucket, x)).getObjectContent());
 			Storage stor=(Storage) in.readObject();
 			in.close();
-			ObjectOutputStream out=new ObjectOutputStream(new FileOutputStream(main.getCacheDir().getAbsolutePath()+File.separator+"cachesound.3ogg"));
+			ObjectOutputStream out=new ObjectOutputStream(new FileOutputStream(main.getCacheDir()+File.separator+"cachesound.3ogg"));
 			out.flush();
 			out.writeObject(stor.getSound());
 			out.close();
-			mp.setDataSource(main.getCacheDir().getAbsolutePath()+File.separator+"cachesound.3ogg");
+			mp.setDataSource(main.getCacheDir()+File.separator+"cachesound.3ogg");
 			mp.start();
 			
 		} catch (Exception e) {

@@ -31,7 +31,7 @@ public class Uploader{
 	//Gets the storage file, gets the manifest, checks the id of the next upload, puts the new file, updates manifest with new ID+location
 	public void upload(){
 		try {
-			ObjectInputStream in= new ObjectInputStream(new FileInputStream(main.getCacheDir().getAbsolutePath()+File.separator+"stored.wip"));
+			ObjectInputStream in= new ObjectInputStream(new FileInputStream(main.getCacheDir()+File.separator+"stored.wip"));
 			Storage sto= (Storage)in.readObject();
 			Location loc= sto.getLocation();
 			AmazonS3Client s3Client =   new AmazonS3Client( new BasicAWSCredentials( id, key ) );
@@ -40,14 +40,14 @@ public class Uploader{
 			in.close();
 			int i=map.size();
 			map.put(""+i, loc);
-			PutObjectRequest por= new PutObjectRequest(bucket, ""+i, new File(main.getCacheDir().getAbsolutePath()+File.separator+"stored.wip"));
+			PutObjectRequest por= new PutObjectRequest(bucket, ""+i, new File(main.getCacheDir()+File.separator+"stored.wip"));
 			s3Client.putObject(por);
-			ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(main.getCacheDir().getAbsolutePath()+File.separator+"manifest.man"));
+			ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(main.getCacheDir()+File.separator+"manifest.man"));
 			out.flush();
 			out.writeObject(map);
 			out.flush();
 			out.close();
-			por= new PutObjectRequest(bucket, "manifest", main.getCacheDir().getAbsolutePath()+File.separator+"manifest.man" );
+			por= new PutObjectRequest(bucket, "manifest", main.getCacheDir()+File.separator+"manifest.man" );
 			s3Client.putObject(por);
 
 		} catch (FileNotFoundException e) {
