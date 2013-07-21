@@ -22,8 +22,8 @@ import com.example.wisputil.Stor;
 
 
 public class Uploader extends AsyncTask<Stor, Void, Void>{
-	public static final String key="HAIlFtZEDI3hRTgOf1MwBRzNst7oiBnLYGqNODUi";
-	public static final String id= "AKIAJYSNO2HXNLWXF72Q";
+	public static final String key="K0vltjLmjxFD9HZ6Pk5NCMZLNf3PJitIShQAJG2i";
+	public static final String id= "AKIAIOGZATNEIBT5HWFA";
 	public static final String bucket= "wispdata";
 	MainActivity main;
 	public Uploader(MainActivity man){
@@ -39,7 +39,6 @@ public class Uploader extends AsyncTask<Stor, Void, Void>{
 			SerializableLatLng loc= sto.getLocation();
 			Log.d("2", "2");
 			AmazonS3Client s3Client =   new AmazonS3Client( new BasicAWSCredentials( id, key ) );
-			new ManifestGen(main);
 			Log.d("2", "2");
 			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(bucket, "manifest")).getObjectContent());
 			Log.d("2", "2");
