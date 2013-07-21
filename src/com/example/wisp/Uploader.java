@@ -1,7 +1,6 @@
 package com.example.wisp;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,11 +16,12 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.wisputil.ManifestGen;
 import com.example.wisputil.SerializableLatLng;
-import com.example.wisputil.Storage;
+import com.example.wisputil.Stor;
 
 
-public class Uploader extends AsyncTask<Void, Void, Void>{
+public class Uploader extends AsyncTask<Stor, Void, Void>{
 	public static final String key="HAIlFtZEDI3hRTgOf1MwBRzNst7oiBnLYGqNODUi";
 	public static final String id= "AKIAJYSNO2HXNLWXF72Q";
 	public static final String bucket= "wispdata";
@@ -32,18 +32,16 @@ public class Uploader extends AsyncTask<Void, Void, Void>{
 	}
 	//Gets the storage file, gets the manifest, checks the id of the next upload, puts the new file, updates manifest with new ID+location
 	@Override
-	protected Void doInBackground(Void... params) {
+	protected Void doInBackground(Stor... params) {
 		try {
+			Stor sto=params[0];
 			Log.d("2", "2");
-			ObjectInputStream in= new ObjectInputStream(new FileInputStream(main.getCacheDir()+File.separator+"stored.wip"));
-			Log.d("2", "2");
-			Storage sto= (Storage)in.readObject();
-			Log.d("2", "2");
-			SerializableLatLng loc= new SerializableLatLng(sto.getLocation());
+			SerializableLatLng loc= sto.getLocation();
 			Log.d("2", "2");
 			AmazonS3Client s3Client =   new AmazonS3Client( new BasicAWSCredentials( id, key ) );
+			new ManifestGen(main);
 			Log.d("2", "2");
-			in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(bucket, "manifest")).getObjectContent());
+			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(bucket, "manifest")).getObjectContent());
 			Log.d("2", "2");
 			HashMap<String, SerializableLatLng> map=(HashMap<String, SerializableLatLng>)in.readObject();
 			Log.d("2", "2");
@@ -82,6 +80,9 @@ public class Uploader extends AsyncTask<Void, Void, Void>{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

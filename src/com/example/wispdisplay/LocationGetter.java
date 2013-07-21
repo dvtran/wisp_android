@@ -14,7 +14,7 @@ import android.os.AsyncTask;
 import com.example.wisp.R;
 import com.example.wisp.Uploader;
 import com.example.wisputil.MarkListen;
-import com.example.wisputil.Storage;
+import com.example.wisputil.Stor;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -44,9 +44,9 @@ public class LocationGetter extends AsyncTask<Location, MarkerOptions, Void> {
 			for (int i=0;i<objects.length;i++){
 				S3Object obj = s3Service.getObject(Uploader.bucket, objects[i].getKey());
             	ObjectInputStream in = new ObjectInputStream(obj.getDataInputStream());
-            	Storage stor= (Storage)in.readObject();
+            	Stor stor= (Stor)in.readObject();
             	MarkerOptions mark= new MarkerOptions();
-            	mark.position(stor.getLocation());
+            	mark.position(stor.getLocation().readResolve());
             	mark.draggable(false);
             	mark.visible(false);
             	map.addMark(mark);

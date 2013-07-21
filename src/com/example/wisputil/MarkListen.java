@@ -45,7 +45,7 @@ public class MarkListen implements OnMarkerClickListener {
 		String x=revmap.get(loc);
 		try {
 			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(Uploader.bucket, x)).getObjectContent());
-			Storage stor=(Storage) in.readObject();
+			Stor stor=(Stor) in.readObject();
 			in.close();
 			ObjectOutputStream out=new ObjectOutputStream(new FileOutputStream(main.getCacheDir()+File.separator+"cachesound.3ogg"));
 			out.flush();

@@ -24,9 +24,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.wisputil.MarkListen;
 import com.example.wisputil.SerializableLatLng;
-import com.example.wisputil.Storage;
+import com.example.wisputil.Stor;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -40,6 +39,7 @@ public class MainActivity extends Activity {
 	Uploader upload= new Uploader(this);
 	GPSGrabber gpsGet;
 	Location loc=null;
+	Stor sto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +95,7 @@ public class MainActivity extends Activity {
 				}
 				else if (stored&&!waitonloc){
 					Log.d("atupload", "atupload");
-					upload.execute((Void)null);
+					upload.execute(sto);
 					Log.d("1", "1");
 
 					
@@ -194,12 +194,9 @@ public class MainActivity extends Activity {
 			{
 				sound[i] = Byte.valueOf(sou[i]);
 			}
-			Storage stor= new Storage(new SerializableLatLng(MarkListen.toLatLng(loc)), sound);
-			ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(getCacheDir()+File.separator+"stored.wip"));
-			out.flush();
-			out.writeObject(stor);
-			out.flush();
-			out.close();
+			Stor stor= new Stor(new SerializableLatLng(loc.getLatitude(), loc.getLongitude()), sound);
+			sto=stor;
+
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -243,7 +240,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void onConnected(Bundle connectionHint) {
 	        mCurrentLocation = mLocationClient.getLastLocation();
-	        Log.d("Loc", "locationgot");
+	        Log.d("Loc", mCurrentLocation.getLatitude()+", "+mCurrentLocation.getLongitude());
 	        mLocationClient.disconnect();
 	        Log.d("Loc", "locationdcd");
 	        main.onLocationGet(mCurrentLocation);

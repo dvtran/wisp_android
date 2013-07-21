@@ -4,22 +4,23 @@ import java.io.Serializable;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class SerializableLatLng implements Serializable {
+public class SerializableLatLng implements Serializable{
 
 /**
 	 * 
 	 */
-	private static final long serialVersionUID = 5030365755268065417L;
-/**
-	 * 
-	 */
+	private static final long serialVersionUID = -9107934123689300030L;
 public final double Latitude;
 public final double Longitude;
 
 public SerializableLatLng(LatLng latLng) {
     Latitude=latLng.latitude;
     Longitude=latLng.longitude;
-}   
+}
+public SerializableLatLng(Double lat, Double longs){
+	Latitude=lat;
+	Longitude=longs;
+}
 
 //this is where the translation happens
 public LatLng readResolve() {
