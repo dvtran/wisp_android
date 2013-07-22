@@ -20,24 +20,16 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class LocationGetter extends AsyncTask<Location, MarkerOptions, Void> {
+public class LocationGetter extends AsyncTask<Void, MarkerOptions, Void> {
 	MapFragment mMap;
 	MapShow map;
-	HashMap<Location, String> revmap= new HashMap<Location, String>(50);
 	public LocationGetter(MapFragment mmap, MapShow mape){
 		super();
 		mMap=mmap;
 		map=mape;
 	}
 	@Override
-	protected Void doInBackground(Location... arg0) {
-		GoogleMapOptions option= new GoogleMapOptions();
-		option.camera(new CameraPosition(MarkListen.toLatLng(arg0[0]),(float)14.0,(float)0.0,(float)0.0));
-		mMap=MapFragment.newInstance(option);
-		FragmentTransaction fragmentTransaction = map.getFragmentManager().beginTransaction();
-		fragmentTransaction.add(R.id.map, mMap);
-		fragmentTransaction.commit();
-		map.setUpMap();
+	protected Void doInBackground(Void... arg0) {
 		try {
 			RestS3Service s3Service = new RestS3Service(new AWSCredentials( Uploader.id, Uploader.key ));
 			S3Object[] objects = s3Service.listObjects(Uploader.bucket);

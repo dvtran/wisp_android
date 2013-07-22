@@ -7,16 +7,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
-import java.util.HashMap;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.wisputil.ManifestGen;
 import com.example.wisputil.SerializableLatLng;
 import com.example.wisputil.Stor;
 
@@ -40,15 +37,11 @@ public class Uploader extends AsyncTask<Stor, Void, Void>{
 			Log.d("2", "2");
 			AmazonS3Client s3Client =   new AmazonS3Client( new BasicAWSCredentials( id, key ) );
 			Log.d("2", "2");
-			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(bucket, "manifest")).getObjectContent());
+			new ManifestGen(main);
+			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(bucket, "count").getObjectContent());
 			Log.d("2", "2");
-			HashMap<String, SerializableLatLng> map=(HashMap<String, SerializableLatLng>)in.readObject();
-			Log.d("2", "2");
+			Integer i=(Integer)in.readObject();
 			in.close();
-			Log.d("2", "2");
-			int i=map.size();
-			Log.d("2", "2");
-			map.put(""+i, loc);
 			Log.d("2", "2");
 			PutObjectRequest por= new PutObjectRequest(bucket, ""+i, new File(main.getCacheDir()+File.separator+"stored.wip"));
 			Log.d("2", "2");
@@ -58,16 +51,17 @@ public class Uploader extends AsyncTask<Stor, Void, Void>{
 			Log.d("2", "2");
 			out.flush();
 			Log.d("2", "2");
-			out.writeObject(map);
+			out.writeObject(Integer.valueOf(i+1));
 			Log.d("2", "2");
 			out.flush();
 			Log.d("2", "2");
 			out.close();
 			Log.d("2", "2");
-			por= new PutObjectRequest(bucket, "manifest", main.getCacheDir()+File.separator+"manifest.man" );
+			por= new PutObjectRequest(bucket, "count", main.getCacheDir()+File.separator+"manifest.man" );
 			Log.d("2", "2");
 			s3Client.putObject(por);
 			Log.d("2", "2");
+			main.done();
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
