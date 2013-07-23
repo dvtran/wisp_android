@@ -36,7 +36,7 @@ public class MarkListen implements OnMarkerClickListener {
 		LatLng latlng= marker.getPosition();
 		int x=locget.getSound(latlng);
 		if (x==null){
-			Toast toast = Toast.makeText(getApplicationContext(), "No Sound Found", Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(locget.map.getApplicationContext(), "No Sound Found", Toast.LENGTH_SHORT);
 			toast.setDuration(5);
 			toast.show();
 		}

@@ -19,7 +19,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class LocationGetter extends AsyncTask<Void, MarkerOptions, Void> {
 	MapFragment mMap;
 	MapShow map;
+<<<<<<< HEAD
 	HashMap<LatLng, Integer> revloc= new HashMap<LatLng, Integer>();
+||||||| merged common ancestors
+	HashMap<Location, String> revmap= new HashMap<Location, String>(50);
+=======
+>>>>>>> 0e9156b02f97d5c2923a3c483e6ec44e570a5256
 	public LocationGetter(MapFragment mmap, MapShow mape){
 		super();
 		mMap=mmap;

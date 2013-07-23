@@ -100,8 +100,13 @@ public class MainActivity extends Activity {
 					med.stop();
 					med.reset();
 					med.release();
+<<<<<<< HEAD
 					med=new MediaRecorder();
 					playing=false;
+||||||| merged common ancestors
+=======
+					playing=false;
+>>>>>>> 0e9156b02f97d5c2923a3c483e6ec44e570a5256
 					waitonloc=true;
 					//uses gpsGet's get location call to get location, writes location to byte array
 					gpsGet.execute((Void)null);
@@ -283,6 +288,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void onConnected(Bundle connectionHint) {
 	        mCurrentLocation = mLocationClient.getLastLocation();
+<<<<<<< HEAD
 	        Log.d("Loc", ""+(mCurrentLocation==null));
 	        while (mCurrentLocation==null){
 	        	Log.d("loop", "ran");
@@ -309,6 +315,10 @@ public class MainActivity extends Activity {
 	             AlertDialog alert = alertDialogBuilder.create();
 	             alert.show();
 	        }
+||||||| merged common ancestors
+=======
+	        Log.d("Loc", ""+(mCurrentLocation==null));
+>>>>>>> 0e9156b02f97d5c2923a3c483e6ec44e570a5256
 	        Log.d("Loc", mCurrentLocation.getLatitude()+", "+mCurrentLocation.getLongitude());
 	        mLocationClient.disconnect();
 	        Log.d("Loc", "locationdcd");

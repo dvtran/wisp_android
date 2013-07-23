@@ -26,8 +26,13 @@ public class MapShow extends Activity {
 		setUpMap();
 		map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 		LocationGetter locdate= new LocationGetter(mMapFragment, this);
+<<<<<<< HEAD
 		locdate.execute((Void)null);
 		map.setOnMarkerClickListener(new MarkListen(locdate));
+||||||| merged common ancestors
+=======
+		locdate.execute((Void)null);
+>>>>>>> 0e9156b02f97d5c2923a3c483e6ec44e570a5256
 	}
 	protected void setUpMap() {
 	    // Do a null check to confirm that we have not already instantiated the map.
