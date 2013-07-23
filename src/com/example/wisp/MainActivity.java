@@ -3,20 +3,20 @@ package com.example.wisp;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 import org.apache.commons.io.IOUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -24,6 +24,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.wispdisplay.MapShow;
 import com.example.wisputil.SerializableLatLng;
 import com.example.wisputil.Stor;
 import com.google.android.gms.common.ConnectionResult;
@@ -36,10 +37,14 @@ public class MainActivity extends Activity {
 	boolean playing =false;
 	boolean lochere=false;
 	boolean waitonloc=false;
+	boolean waitonupload=false;
+	boolean recording=false;
 	Uploader upload= new Uploader(this);
 	GPSGrabber gpsGet;
 	Location loc=null;
 	Stor sto;
+    final MainActivity main=this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,15 +53,21 @@ public class MainActivity extends Activity {
         Button b= (Button) findViewById(R.id.button1);
         Button b2= (Button) findViewById(R.id.button2);
         Button b3= (Button) findViewById(R.id.button3);
+        Button b4= (Button) findViewById(R.id.mapswitch);
         gpsGet= new GPSGrabber(this);
         b.setOnClickListener(new View.OnClickListener() {
 			MediaRecorder med= new MediaRecorder();
-
+			
 			@Override //This is called when the button is pressed
 			public void onClick(View v) {
 				clicked=!clicked;
 				Log.d("click", "click");
-				if (clicked&&!stored&&!lochere&&!waitonloc){
+				if (waitonupload){
+					Toast toast = Toast.makeText(getApplicationContext(), "Please wait, processing", Toast.LENGTH_SHORT);
+					toast.setDuration(5);
+					toast.show();
+				}
+				else if (clicked&&!stored&&!lochere&&!waitonloc){
 					//sets up all the recording shit
 					Log.d("1", "1");
 					med.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
@@ -72,6 +83,7 @@ public class MainActivity extends Activity {
 						med.prepare();
 						Log.d("1", "1");
 						med.start();
+						recording=true;
 						Log.d("1", "1");
 					} catch (IllegalStateException e) {
 						// TODO Auto-generated catch block
@@ -88,6 +100,8 @@ public class MainActivity extends Activity {
 					med.stop();
 					med.reset();
 					med.release();
+					med=new MediaRecorder();
+					playing=false;
 					waitonloc=true;
 					//uses gpsGet's get location call to get location, writes location to byte array
 					gpsGet.execute((Void)null);
@@ -95,8 +109,10 @@ public class MainActivity extends Activity {
 				}
 				else if (stored&&!waitonloc){
 					Log.d("atupload", "atupload");
+					waitonupload=true;
 					upload.execute(sto);
 					Log.d("1", "1");
+					
 
 					
 				}
@@ -114,9 +130,10 @@ public class MainActivity extends Activity {
         	@Override
 			public void onClick(View v) {
         		Log.d("1", "1");
+        		if (stored==true&&recording==false){
         	    MediaPlayer mp = new MediaPlayer();
-        	    playing=false;
-				if (!playing){
+        	    playing=!playing;
+				if (playing==true){
 				    mp = new MediaPlayer();
 
 				    try {
@@ -143,9 +160,8 @@ public class MainActivity extends Activity {
 					playing=false;
 				}
 			}
-
+        	}
         });
-        final Activity main=this;
         b3.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -164,9 +180,15 @@ public class MainActivity extends Activity {
 				        f= new File(getCacheDir()+File.separator+"cachedsound.3gpp");
 				        f.delete();
 				        f=null;
-				        waitonloc=false;
-				        stored=false;
-				        clicked=false;
+				    	clicked=false;
+				    	stored=false;
+				    	playing =false;
+				    	lochere=false;
+				    	waitonloc=false;
+				    	waitonupload=false;
+				    	recording=false;
+				    	loc=null;
+
 				        
 				    }})
 				 .setNegativeButton(android.R.string.no, null).show();
@@ -178,6 +200,27 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
+        b4.setOnClickListener(new View.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(main, MapShow.class);
+				
+			}
+        	
+        });
+    }
+    protected void done(){
+    	clicked=false;
+    	stored=false;
+    	playing =false;
+    	lochere=false;
+    	waitonloc=false;
+    	upload= new Uploader(this);
+    	gpsGet= new GPSGrabber(this);
+    	loc=null;
+    	sto=null;
+    	waitonupload=false;
     }
     protected void onLocationGet(Location l){
     	Log.d("GotToLocGet", ""+waitonloc);
@@ -240,6 +283,32 @@ public class MainActivity extends Activity {
 		@Override
 		public void onConnected(Bundle connectionHint) {
 	        mCurrentLocation = mLocationClient.getLastLocation();
+	        Log.d("Loc", ""+(mCurrentLocation==null));
+	        while (mCurrentLocation==null){
+	        	Log.d("loop", "ran");
+	        	 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+	                     main);
+	             alertDialogBuilder
+	                     .setMessage("GPS is disabled in your device. Enable it?")
+	                     .setCancelable(false)
+	                     .setPositiveButton("Enable GPS",
+	                             new DialogInterface.OnClickListener() {
+	                                 public void onClick(DialogInterface dialog,
+	                                         int id) {
+	                                     Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+	                                     startActivity(intent);
+	                                     mCurrentLocation= mLocationClient.getLastLocation();
+	                                 }
+	                             });
+	             alertDialogBuilder.setNegativeButton("Cancel",
+	                     new DialogInterface.OnClickListener() {
+	                         public void onClick(DialogInterface dialog, int id) {
+	                             dialog.cancel();
+	                         }
+	                     });
+	             AlertDialog alert = alertDialogBuilder.create();
+	             alert.show();
+	        }
 	        Log.d("Loc", mCurrentLocation.getLatitude()+", "+mCurrentLocation.getLongitude());
 	        mLocationClient.disconnect();
 	        Log.d("Loc", "locationdcd");

@@ -26,6 +26,8 @@ public class MapShow extends Activity {
 		setUpMap();
 		map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 		LocationGetter locdate= new LocationGetter(mMapFragment, this);
+		locdate.execute((Void)null);
+		map.setOnMarkerClickListener(new MarkListen(locdate));
 	}
 	protected void setUpMap() {
 	    // Do a null check to confirm that we have not already instantiated the map.

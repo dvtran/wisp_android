@@ -1,27 +1,26 @@
 package com.example.wisp;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.StreamCorruptedException;
-import java.util.HashMap;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.wisputil.ManifestGen;
-import com.example.wisputil.SerializableLatLng;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.ProgressEvent;
+import com.amazonaws.services.s3.model.ProgressListener;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.Upload;
 import com.example.wisputil.Stor;
 
 
-public class Uploader extends AsyncTask<Stor, Void, Void>{
+public class Uploader extends AsyncTask<Stor, Void, Void> implements ProgressListener{
 	public static final String key="K0vltjLmjxFD9HZ6Pk5NCMZLNf3PJitIShQAJG2i";
 	public static final String id= "AKIAIOGZATNEIBT5HWFA";
 	public static final String bucket= "wispdata";
@@ -34,58 +33,59 @@ public class Uploader extends AsyncTask<Stor, Void, Void>{
 	@Override
 	protected Void doInBackground(Stor... params) {
 		try {
-			Stor sto=params[0];
-			Log.d("2", "2");
-			SerializableLatLng loc= sto.getLocation();
-			Log.d("2", "2");
-			AmazonS3Client s3Client =   new AmazonS3Client( new BasicAWSCredentials( id, key ) );
-			Log.d("2", "2");
-			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(bucket, "manifest")).getObjectContent());
-			Log.d("2", "2");
-			HashMap<String, SerializableLatLng> map=(HashMap<String, SerializableLatLng>)in.readObject();
-			Log.d("2", "2");
-			in.close();
-			Log.d("2", "2");
-			int i=map.size();
-			Log.d("2", "2");
-			map.put(""+i, loc);
-			Log.d("2", "2");
-			PutObjectRequest por= new PutObjectRequest(bucket, ""+i, new File(main.getCacheDir()+File.separator+"stored.wip"));
-			Log.d("2", "2");
-			s3Client.putObject(por);
-			Log.d("2", "2");
-			ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(main.getCacheDir()+File.separator+"manifest.man"));
-			Log.d("2", "2");
-			out.flush();
-			Log.d("2", "2");
-			out.writeObject(map);
-			Log.d("2", "2");
-			out.flush();
-			Log.d("2", "2");
-			out.close();
-			Log.d("2", "2");
-			por= new PutObjectRequest(bucket, "manifest", main.getCacheDir()+File.separator+"manifest.man" );
-			Log.d("2", "2");
-			s3Client.putObject(por);
-			Log.d("2", "2");
+			AWSCredentials myCredentials = new BasicAWSCredentials(id, key); 
+			AmazonS3Client s3Client = new AmazonS3Client(myCredentials);        
+			/*S3Object object = s3Client.getObject(new GetObjectRequest(bucket, "count"));
+			StringBuilder s= new StringBuilder();
+			InputStream reader = new BufferedInputStream(
+					   object.getObjectContent());
+					
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (StreamCorruptedException e) {
+					int read = -1;
+
+					while ( ( read = reader.read() ) != -1 ) {
+					    s.append(read);
+					}
+					reader.close();
+			String str=s.toString();
+			int i=Integer.valueOf(str);
+			*/
+			int i=s3Client.listObjects(bucket).getObjectSummaries().size();
+			ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(main.getCacheDir()+File.separator+"stored.ogg"));
+			out.flush();
+			out.writeObject(params[0].sound);
+			out.flush();
+			out.close();
+			TransferManager tx = new TransferManager(myCredentials);
+	        ObjectMetadata newObjectMetadata = new ObjectMetadata();
+	        newObjectMetadata.addUserMetadata("loc", params[0].location.toString());
+	        newObjectMetadata.setContentLength(new File(main.getCacheDir()+File.separator+"stored.ogg").length());
+	        Upload u= tx.upload(bucket,key,new FileInputStream(new File(main.getCacheDir()+File.separator+"stored.ogg")), newObjectMetadata);
+	        u.addProgressListener(this);
+			/*DataOutputStream outer= new DataOutputStream(new FileOutputStream(main.getCacheDir()+File.separator+"count"));
+			outer.write(i);
+			outer.close();
+			por=new PutObjectRequest(bucket, ""+0, new File(main.getCacheDir()+File.separator+"count"));
+			s3Client.putObject(por);*/
+
+		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return null;
+	}
+	@Override
+	public void progressChanged(ProgressEvent e) {
+		if (e.equals(ProgressEvent.FAILED_EVENT_CODE)){
+			Log.d("FAILURE", "UPLOAD FAILED");
+		}
+		else if (e.equals(ProgressEvent.COMPLETED_EVENT_CODE)){
+			main.done();
+		}
+		
 	}
 
 

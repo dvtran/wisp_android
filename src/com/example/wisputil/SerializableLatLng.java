@@ -26,5 +26,8 @@ public SerializableLatLng(Double lat, Double longs){
 public LatLng readResolve() {
     return new LatLng(Latitude, Longitude);
 }
+public String toString(){
+	return ""+Latitude+";"+Longitude;
+}
 
 }
