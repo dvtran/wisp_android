@@ -42,8 +42,8 @@ public class MarkListen implements OnMarkerClickListener {
 		else{
 			int x=locget.getSound(latlng);
 		try {
-			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(Uploader.bucket, x+".ogg")).getObjectContent());
-			Byte[] sound= (Byte[]) in.readObject();
+			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(Uploader.bucket, x+".3gpp")).getObjectContent());
+			byte[] sound= (byte[]) in.readObject();
 			in.close();
 			ObjectOutputStream out=new ObjectOutputStream(new FileOutputStream(locget.map.getCacheDir()+File.separator+"cachesound.3ogg"));
 			out.flush();

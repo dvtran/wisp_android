@@ -1,10 +1,10 @@
 package com.example.wisp;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -17,7 +17,6 @@ import com.amazonaws.services.s3.model.ProgressEvent;
 import com.amazonaws.services.s3.model.ProgressListener;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
-import com.example.wisputil.SerializableLatLng;
 import com.example.wisputil.Stor;
 
 
@@ -37,16 +36,14 @@ public class Uploader extends AsyncTask<Stor, Void, Void> implements ProgressLis
 			AWSCredentials myCredentials = new BasicAWSCredentials(id, key); 
 			AmazonS3Client s3Client = new AmazonS3Client(myCredentials);        
 			int i=s3Client.listObjects(bucket).getObjectSummaries().size();
-			ObjectOutputStream out= new ObjectOutputStream(new FileOutputStream(main.getCacheDir()+File.separator+"stored.ogg"));
-			Stor sto=params[0];
-			out.writeObject(sto.sound);
-			out.flush();
-			out.close();
+			ByteArrayOutputStream out= new ByteArrayOutputStream();
+			out.write(params[0].sound);
+			out.writeTo(new FileOutputStream(main.getCacheDir()+File.separator+"stored.ogg"));
 			TransferManager tx = new TransferManager(myCredentials);
 	        ObjectMetadata newObjectMetadata = new ObjectMetadata();
 	        newObjectMetadata.addUserMetadata("loc", params[0].location.toString());
 	        newObjectMetadata.setContentLength(new File(main.getCacheDir()+File.separator+"stored.ogg").length());
-	        Upload u= tx.upload(bucket,i+".ogg",new FileInputStream(new File(main.getCacheDir()+File.separator+"stored.ogg")), newObjectMetadata);
+	        Upload u= tx.upload(bucket,i+".3gpp",new FileInputStream(new File(main.getCacheDir()+File.separator+"stored.ogg")), newObjectMetadata);
 	        u.addProgressListener(this);
 
 

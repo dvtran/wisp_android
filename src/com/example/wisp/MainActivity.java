@@ -234,13 +234,7 @@ public class MainActivity extends Activity {
 			FileInputStream in= new FileInputStream(getCacheDir()+File.separator+"cachedsound.3gpp");
 			byte[] sou = IOUtils.toByteArray(in);
 			in.close();
-		
-			Byte[] sound = new Byte[sou.length];
-			for (int i = 0; i < sou.length; i++)
-			{
-				sound[i] = Byte.valueOf(sou[i]);
-			}
-			Stor stor= new Stor(new SerializableLatLng(loc.getLatitude(), loc.getLongitude()), sound);
+			Stor stor= new Stor(new SerializableLatLng(loc.getLatitude(), loc.getLongitude()), sou);
 			sto=stor;
 
 			} catch (FileNotFoundException e) {

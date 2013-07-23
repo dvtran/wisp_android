@@ -3,21 +3,20 @@ package com.example.wisputil;
 import java.io.Serializable;
 
 public class Stor implements Serializable {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3093540784144607823L;
+	private static final long serialVersionUID = -3592718685712229322L;
 	public SerializableLatLng location;
-	public Byte[] sound;
-	public Stor(SerializableLatLng loc, Byte[] sou){
+	public byte[] sound;
+	public Stor(SerializableLatLng loc, byte[] sou){
 		location=loc;
 		sound=sou;
 	}
 	public SerializableLatLng getLocation(){
 		return location;
 	}
-	public Byte[] getSound(){
+	public byte[] getSound(){
 		return sound;
 	}
 }
