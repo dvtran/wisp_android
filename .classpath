@@ -10,5 +10,9 @@
 	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/lib/aws-android-sdk-1.6.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/commons-io-2.4/commons-io-2.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/Downloads/httpcomponents-client-4.2.5/lib/httpmime-4.2.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/third-party/jaxp-1.4.4/jaxp-api.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/third-party/sjsxp-1_0_2/sjsxp.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/third-party/jackson-mapper-1.8/jackson-mapper-asl-1.8.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/third-party/jackson-core-1.8/jackson-core-asl-1.8.7.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

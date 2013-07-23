@@ -34,27 +34,29 @@ public class MarkListen implements OnMarkerClickListener {
 		AmazonS3Client s3Client =   new AmazonS3Client( new BasicAWSCredentials( Uploader.id, Uploader.key ) );
 		MediaPlayer mp= new MediaPlayer();
 		LatLng latlng= marker.getPosition();
-		int x=locget.getSound(latlng);
-		if (x==null){
+		if (locget.getSound(latlng)==null){
 			Toast toast = Toast.makeText(locget.map.getApplicationContext(), "No Sound Found", Toast.LENGTH_SHORT);
 			toast.setDuration(5);
 			toast.show();
 		}
+		else{
+			int x=locget.getSound(latlng);
 		try {
-			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(Uploader.bucket, x)).getObjectContent());
-			Stor stor=(Stor) in.readObject();
+			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(Uploader.bucket, x+".ogg")).getObjectContent());
+			Byte[] sound= (Byte[]) in.readObject();
 			in.close();
-			ObjectOutputStream out=new ObjectOutputStream(new FileOutputStream(main.getCacheDir()+File.separator+"cachesound.3ogg"));
+			ObjectOutputStream out=new ObjectOutputStream(new FileOutputStream(locget.map.getCacheDir()+File.separator+"cachesound.3ogg"));
 			out.flush();
-			out.writeObject(stor.getSound());
+			out.writeObject(sound);
 			out.close();
-			mp.setDataSource(main.getCacheDir()+File.separator+"cachesound.3ogg");
+			mp.setDataSource(locget.map.getCacheDir()+File.separator+"cachesound.3ogg");
 			mp.start();
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
+		}
 		return true;
 	}
 
