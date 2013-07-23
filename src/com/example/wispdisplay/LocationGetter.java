@@ -42,6 +42,7 @@ public class LocationGetter extends AsyncTask<Void, MarkerOptions, Void> {
 					if (x.charAt(n)==';'){
 						lat=x.substring(0, n);
 						longer=x.substring(n+1, x.length());
+						break;
 					}
 				}
 				
@@ -49,7 +50,7 @@ public class LocationGetter extends AsyncTask<Void, MarkerOptions, Void> {
             	LatLng latlng= new LatLng(Double.parseDouble(lat), Double.parseDouble(longer));
             	mark.position(latlng);
             	mark.draggable(false);
-            	mark.visible(false);
+            	mark.visible(true);
             	map.addMark(mark);
             	revloc.put(latlng, Integer.valueOf(i));
 			
