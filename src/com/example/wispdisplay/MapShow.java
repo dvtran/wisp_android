@@ -3,6 +3,7 @@ package com.example.wispdisplay;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 
 import com.example.wisp.R;
@@ -26,23 +27,16 @@ public class MapShow extends Activity {
 		setUpMap();
 		map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 		LocationGetter locdate= new LocationGetter(mMapFragment, this);
-<<<<<<< HEAD
-		locdate.execute((Void)null);
 		map.setOnMarkerClickListener(new MarkListen(locdate));
-||||||| merged common ancestors
-=======
 		locdate.execute((Void)null);
->>>>>>> 0e9156b02f97d5c2923a3c483e6ec44e570a5256
 	}
 	protected void setUpMap() {
 	    // Do a null check to confirm that we have not already instantiated the map.
 	    if (map == null) {
-	        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-	                            .getMap();
+	        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 	        // Check if we were successful in obtaining the map.
-	        if (map != null) {
-	            // The Map is verified. It is now safe to manipulate the map.
-
+	        if (map == null) {
+	        	Log.d("Map", "MapNull");
 	        }
 	    }
 	}
