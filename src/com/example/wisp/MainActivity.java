@@ -145,6 +145,7 @@ public class MainActivity extends Activity {
 							public void onCompletion(MediaPlayer mp) {
 								mp.stop();
 								mp.reset();
+								mp.release();
 								playing=false;
 								
 							}

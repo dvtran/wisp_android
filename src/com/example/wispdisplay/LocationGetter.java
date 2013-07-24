@@ -61,6 +61,9 @@ public class LocationGetter extends AsyncTask<Void, Void, Void> {
     			Log.d("Mark", "Gonnaputmark");
             	revloc.put(latlng, Integer.valueOf(i));
     			Log.d("Mark", "Gonnaputmark");
+    			Log.d("Click", latlng.latitude+", "+latlng.longitude);
+    			Log.d("Click", ""+i);
+
 			
 			}
 			Log.d("Mark", "Gonnaputmark");

@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 
 import android.location.Location;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -18,7 +20,7 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
-public class MarkListen implements OnMarkerClickListener {
+public class MarkListen implements OnMarkerClickListener, OnCompletionListener {
 	LocationGetter locget;
 	public MarkListen(LocationGetter locgetter){
 		locget=locgetter;
@@ -32,8 +34,9 @@ public class MarkListen implements OnMarkerClickListener {
 	@Override
 	public boolean onMarkerClick(Marker marker) {
 		AmazonS3Client s3Client =   new AmazonS3Client( new BasicAWSCredentials( Uploader.id, Uploader.key ) );
-		MediaPlayer mp= new MediaPlayer();
 		LatLng latlng= marker.getPosition();
+		Log.d("Click", latlng.latitude+", "+latlng.longitude);
+		Log.d("Click", ""+locget.getSound(latlng));
 		if (locget.getSound(latlng)==null){
 			Toast toast = Toast.makeText(locget.map.getApplicationContext(), "No Sound Found", Toast.LENGTH_SHORT);
 			toast.setDuration(5);
@@ -49,7 +52,10 @@ public class MarkListen implements OnMarkerClickListener {
 			out.flush();
 			out.writeObject(sound);
 			out.close();
+			MediaPlayer mp= new MediaPlayer();
+			mp.setOnCompletionListener(this);
 			mp.setDataSource(locget.map.getCacheDir()+File.separator+"cachesound.3ogg");
+			mp.prepare();
 			mp.start();
 			
 		} catch (Exception e) {
@@ -58,6 +64,12 @@ public class MarkListen implements OnMarkerClickListener {
 		}
 		}
 		return true;
+	}
+	@Override
+	public void onCompletion(MediaPlayer e) {
+		e.stop();
+		e.release();
+		
 	}
 
 }

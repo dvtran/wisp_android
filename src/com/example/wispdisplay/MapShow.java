@@ -15,9 +15,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -27,6 +29,7 @@ public class MapShow extends Activity implements ConnectionCallbacks, OnConnecti
 	private Location loc;
 	private LocationClient locclient;
 	MapFragment mMapFragment;
+	LocationGetter locdate;
 	public MapShow(){
 
 	}
@@ -34,17 +37,8 @@ public class MapShow extends Activity implements ConnectionCallbacks, OnConnecti
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_map);
-		mMapFragment = MapFragment.newInstance();
-		FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-		fragmentTransaction.add(R.id.map, mMapFragment);
-		fragmentTransaction.commit();
-		setUpMap();
-		map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
     	locclient = new LocationClient(this, this, this);
         locclient.connect();
-		LocationGetter locdate= new LocationGetter(mMapFragment, this);
-		map.setOnMarkerClickListener(new MarkListen(locdate));
-		locdate.execute((Void)null);
 	}
 	protected void setUpMap() {
 	    // Do a null check to confirm that we have not already instantiated the map.
@@ -60,19 +54,8 @@ public class MapShow extends Activity implements ConnectionCallbacks, OnConnecti
 		Log.d("Mark", "MarkergonnaAdded");
 		for (int i=0;i<mark.length;i++){
 			map.addMarker(mark[i]);
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			Log.d("Mark", mark[i].getPosition().latitude+", "+mark[i].getPosition().longitude);
 		}
-		setUpMap();
-		mMapFragment=MapFragment.newInstance();
-		FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-		fragmentTransaction.add(R.id.map, mMapFragment);
-		fragmentTransaction.commit();
 		Log.d("Mark", "MarkerAdded");
 	}
 	@Override
@@ -84,18 +67,9 @@ public class MapShow extends Activity implements ConnectionCallbacks, OnConnecti
 		else{
 			loc=locclient.getLastLocation();
 		}
-		GoogleMapOptions op= new GoogleMapOptions();
-		op.tiltGesturesEnabled(false);
-		op.rotateGesturesEnabled(false);
-		op.zoomControlsEnabled(false);
-		Log.d("Location", loc.getLatitude()+", "+loc.getLongitude());
-        op.camera(new CameraPosition(new LatLng(loc.getLatitude(), loc.getLongitude()),14,0,0));
-        mMapFragment=MapFragment.newInstance(op);
-		FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-		fragmentTransaction.add(R.id.map, mMapFragment);
-		fragmentTransaction.commit();
-		setUpMap();
-		Log.d("Location", "After "+map.getCameraPosition().target.latitude+", "+map.getCameraPosition().target.longitude);
+		runUpMap();
+		locdate= new LocationGetter(mMapFragment, this);
+		locdate.execute((Void)null);
         locclient.disconnect();
 		
 	}
@@ -103,6 +77,14 @@ public class MapShow extends Activity implements ConnectionCallbacks, OnConnecti
 	public void onDisconnected() {
 		// TODO Auto-generated method stub
 		
+	}
+	public void runUpMap(){
+		Log.d("Location", loc.getLatitude()+", "+loc.getLongitude());
+		setUpMap();
+		map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(loc.getLatitude(), loc.getLongitude())));
+		map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+		Log.d("Click", ""+(locdate==null));
+		map.setOnMarkerClickListener(new MarkListen(locdate));
 	}
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
