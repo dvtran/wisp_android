@@ -1,4 +1,4 @@
-package com.example.wispdisplay;
+package com.example.wisp;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,8 +14,6 @@ import android.widget.Toast;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.example.wisp.Uploader;
-import com.example.wisputil.Stor;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -34,16 +32,16 @@ public class MarkListen implements OnMarkerClickListener, OnCompletionListener {
 	@Override
 	public boolean onMarkerClick(Marker marker) {
 		AmazonS3Client s3Client =   new AmazonS3Client( new BasicAWSCredentials( Uploader.id, Uploader.key ) );
-		LatLng latlng= marker.getPosition();
-		Log.d("Click", latlng.latitude+", "+latlng.longitude);
-		Log.d("Click", ""+locget.getSound(latlng));
-		if (locget.getSound(latlng)==null){
+		Log.d("Click", marker.toString());
+		Log.d("Click", ""+(locget==null));
+		Log.d("Click", ""+locget.getSound(marker));
+		if (locget.getSound(marker)==-1){
 			Toast toast = Toast.makeText(locget.map.getApplicationContext(), "No Sound Found", Toast.LENGTH_SHORT);
 			toast.setDuration(5);
 			toast.show();
 		}
 		else{
-			int x=locget.getSound(latlng);
+			int x=locget.getSound(marker);
 		try {
 			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(Uploader.bucket, x+".3gpp")).getObjectContent());
 			byte[] sound= (byte[]) in.readObject();

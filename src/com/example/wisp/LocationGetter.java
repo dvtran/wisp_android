@@ -1,4 +1,4 @@
-package com.example.wispdisplay;
+package com.example.wisp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,15 +13,14 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.example.wisp.Uploader;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class LocationGetter extends AsyncTask<Void, Void, Void> {
 	MapFragment mMap;
 	MapShow map;
-	HashMap<LatLng, Integer> revloc= new HashMap<LatLng, Integer>();
 	ArrayList<MarkerOptions> marks= new ArrayList<MarkerOptions>();
 	AmazonS3Client s3Client;
 	public LocationGetter(MapFragment mmap, MapShow mape){
@@ -59,10 +58,6 @@ public class LocationGetter extends AsyncTask<Void, Void, Void> {
     			Log.d("Mark", "Gonnaputmark");
             	marks.add(mark);
     			Log.d("Mark", "Gonnaputmark");
-            	revloc.put(latlng, Integer.valueOf(i));
-    			Log.d("Mark", "Gonnaputmark");
-    			Log.d("Click", latlng.latitude+", "+latlng.longitude);
-    			Log.d("Click", ""+i);
 
 			
 			}
@@ -78,13 +73,8 @@ public class LocationGetter extends AsyncTask<Void, Void, Void> {
 		map.addMark(marks.toArray(new MarkerOptions[marks.size()]));
 		return;
 	}
-	public Integer getSound(LatLng l){
-		if (revloc.containsKey(l)){
-			return revloc.get(l);
-		}
-		else{
-			return null;
-		}
+	public int getSound(Marker m){
+		return map.getSound(m);
 	}
 
 

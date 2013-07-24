@@ -24,9 +24,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.wispdisplay.MapShow;
-import com.example.wisputil.SerializableLatLng;
-import com.example.wisputil.Stor;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;

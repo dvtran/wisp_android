@@ -10,7 +10,6 @@ import java.util.HashMap;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.wisputil.SerializableLatLng;
 
 public class ManifestGen {
 	public ManifestGen(MainActivity main){

@@ -1,6 +1,7 @@
-package com.example.wisputil;
+package com.example.wisp;
 
 import java.io.Serializable;
+
 
 public class Stor implements Serializable {
 	/**
