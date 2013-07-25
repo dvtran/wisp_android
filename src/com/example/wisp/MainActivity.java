@@ -37,22 +37,26 @@ public class MainActivity extends Activity {
 	boolean waitonloc=false;
 	boolean waitonupload=false;
 	boolean recording=false;
-	boolean goingtoupload=false;
 	Uploader upload= new Uploader(this);
 	GPSGrabber gpsGet;
 	Location loc=null;
 	Stor sto;
     final MainActivity main=this;
+    Button b;
+    Button b2;
+    Button b3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        Button b= (Button) findViewById(R.id.button1);
-        Button b2= (Button) findViewById(R.id.button2);
-        Button b3= (Button) findViewById(R.id.button3);
-        Button b4= (Button) findViewById(R.id.mapswitch);
+        b= (Button) findViewById(R.id.record);
+        b2= (Button) findViewById(R.id.play);
+        b3= (Button) findViewById(R.id.trash);
+        b.setBackgroundResource(R.drawable.recordoff);
+        b2.setBackgroundResource(R.drawable.play);
+        b3.setBackgroundResource(R.drawable.delete);
         gpsGet= new GPSGrabber(this);
         b.setOnClickListener(new View.OnClickListener() {
 			MediaRecorder med;
@@ -83,6 +87,7 @@ public class MainActivity extends Activity {
 						med.prepare();
 						Log.d("1", "1");
 						med.start();
+						main.b.setBackgroundResource(R.drawable.recordon);
 						recording=true;
 						Log.d("1", "1");
 					} catch (IllegalStateException e) {
@@ -103,12 +108,12 @@ public class MainActivity extends Activity {
 					recording=false;
 					playing=false;
 					waitonloc=true;
+					main.b.setBackgroundResource(R.drawable.upload);
 					//uses gpsGet's get location call to get location, writes location to byte array
 					gpsGet.execute((Void)null);
 					
 				}
 				else if (stored&&!waitonloc){
-					goingtoupload=true;
 					Log.d("atupload", "atupload");
 					AlertDialog.Builder alert = new AlertDialog.Builder(main);
 
@@ -123,22 +128,18 @@ public class MainActivity extends Activity {
 					public void onClick(DialogInterface dialog, int whichButton) {
 					String value = input.getText().toString();
 					upload.addName(value);
+					upload.execute(sto);
+					Log.d("1", "1");
 					}
 					});
 
 					alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-					goingtoupload=false;
 					}
 					});
 
 					alert.show();
-					if (goingtoupload){
-						waitonupload=true;
-					
-						upload.execute(sto);
-						Log.d("1", "1");
-					}
+					main.b.setBackgroundResource(R.drawable.recordoff);
 					
 
 					
@@ -174,6 +175,7 @@ public class MainActivity extends Activity {
 								mp.stop();
 								mp.reset();
 								mp.release();
+								b2.setBackgroundResource(R.drawable.play);
 								playing=false;
 								
 							}
@@ -181,6 +183,7 @@ public class MainActivity extends Activity {
 				        mp.prepare();
 				        playing=true;
 				        mp.start();
+				        b2.setBackgroundResource(R.drawable.pause);
 				    } catch (Exception e) {
 				        e.printStackTrace();
 				    }
@@ -230,24 +233,6 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
-        b4.setOnClickListener(new View.OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				if (!recording){
-					Intent intent = new Intent(main, MapShow.class);
-					MainActivity.this.startActivity(intent);
-				}
-				else{
-					Toast toast = Toast.makeText(getApplicationContext(), "Can't do that while recording", Toast.LENGTH_SHORT);
-					toast.setDuration(5);
-					toast.show();
-				}
-
-				
-			}
-        	
-        });
     }
     protected void done(){
     	clicked=false;
@@ -316,43 +301,27 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onConnected(Bundle connectionHint) {
-			while (mCurrentLocation==null){
 	        mCurrentLocation = mLocationClient.getLastLocation();
 	        Log.d("Loc", ""+(mCurrentLocation==null));
 	        if (mCurrentLocation==null){
 	        	Log.d("loop", "ran");
-	        	 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-	                     main);
-	             alertDialogBuilder
-	                     .setMessage("GPS is disabled in your device. Enable it?")
-	                     .setCancelable(false)
-	                     .setPositiveButton("Enable GPS",
-	                             new DialogInterface.OnClickListener() {
-	                                 public void onClick(DialogInterface dialog,
-	                                         int id) {
-	                                     Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-	                                     startActivity(intent);
-	                                     mCurrentLocation= mLocationClient.getLastLocation();
-	                                 }
-	                             });
-	             alertDialogBuilder.setNegativeButton("Cancel",
-	                     new DialogInterface.OnClickListener() {
-	                         public void onClick(DialogInterface dialog, int id) {
-	                             dialog.cancel();
-	                         }
-	                     });
-	             AlertDialog alert = alertDialogBuilder.create();
-	             alert.show();
+	        	   new AlertDialog.Builder(main)
+	        	      .setMessage("GPS services unavailable, upload canceled.")
+	        	      .setTitle("GPS done broke")
+	        	      .setCancelable(true)
+	        	      .setNeutralButton(android.R.string.cancel,
+	        	         new DialogInterface.OnClickListener() {
+	        	         public void onClick(DialogInterface dialog, int whichButton){}
+	        	         })
+	        	      .show();
+	        	   main.waitonloc=false;
+	        	 
 	        }
 	        Log.d("Loc", ""+(mCurrentLocation==null));
-	        Log.d("Loc", mCurrentLocation.getLatitude()+", "+mCurrentLocation.getLongitude());
-	        
-
-	        
-		}
 	        mLocationClient.disconnect();
 	        Log.d("Loc", "locationdcd");
 	        main.onLocationGet(mCurrentLocation);
+	        
 		}
 
 		@Override

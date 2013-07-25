@@ -65,6 +65,8 @@ public class Uploader extends AsyncTask<Stor, Void, Void> implements ProgressLis
 	public void progressChanged(ProgressEvent e) {
 		if (e.getEventCode()==ProgressEvent.FAILED_EVENT_CODE){
 			Log.d("UPLOAD", "UPLOAD FAILED");
+			main.done();
+
 		}
 		else if (e.getEventCode()==ProgressEvent.COMPLETED_EVENT_CODE){
 			

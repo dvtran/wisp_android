@@ -14,6 +14,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -55,6 +56,7 @@ public class LocationGetter extends AsyncTask<Void, Void, Void> {
             	mark=mark.position(latlng);
             	mark=mark.draggable(false);
             	mark=mark.visible(true);
+            	mark=mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
     			Log.d("Mark", "Gonnaputmark");
             	marks.add(mark);
     			Log.d("Mark", "Gonnaputmark");
