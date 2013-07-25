@@ -57,7 +57,7 @@ public class MapShow extends Activity implements ConnectionCallbacks, OnConnecti
                   dialog.show();
          }
 		setUpMap();
-		map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+		map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 		Log.d("Click", ""+(locdate==null));
     	locclient = new LocationClient(this, this, this);
         locclient.connect();
@@ -75,7 +75,8 @@ public class MapShow extends Activity implements ConnectionCallbacks, OnConnecti
 	public void addMark(MarkerOptions[] mark){
 		Log.d("Mark", "MarkergonnaAdded");
 		for (int i=0;i<mark.length;i++){
-			revloc.put(map.addMarker(mark[i]), i);
+			revloc.put(map.addMarker(mark[i]), i+1);
+			Log.d("Debug", ""+i);
 		}
 		Log.d("Mark", "MarkerAdded");
 		Log.d("Click", "Revloc, "+revloc.keySet().size()+", "+revloc.keySet().toArray()[0].toString());

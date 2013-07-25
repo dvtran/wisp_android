@@ -2,6 +2,7 @@ package com.example.wisp;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -31,37 +32,28 @@ public class MarkListen implements OnMarkerClickListener, OnCompletionListener {
 	}
 	@Override
 	public boolean onMarkerClick(Marker marker) {
-		AmazonS3Client s3Client =   new AmazonS3Client( new BasicAWSCredentials( Uploader.id, Uploader.key ) );
-		Log.d("Click", marker.toString());
-		Log.d("Click", ""+(locget==null));
-		Log.d("Click", ""+locget.getSound(marker));
-		if (locget.getSound(marker)==-1){
-			Toast toast = Toast.makeText(locget.map.getApplicationContext(), "No Sound Found", Toast.LENGTH_SHORT);
-			toast.setDuration(5);
-			toast.show();
-		}
-		else{
-			int x=locget.getSound(marker);
+		SoundGetter get= new SoundGetter(this);
+		get.execute(marker);
+		return true;
+	}
+	public void listen(String f){
+		MediaPlayer mp= new MediaPlayer();
+		Log.d("Listen", f);
+		mp.setOnCompletionListener(this);
 		try {
-			ObjectInputStream in=new ObjectInputStream(s3Client.getObject(new GetObjectRequest(Uploader.bucket, x+".3gpp")).getObjectContent());
-			byte[] sound= (byte[]) in.readObject();
-			in.close();
-			ObjectOutputStream out=new ObjectOutputStream(new FileOutputStream(locget.map.getCacheDir()+File.separator+"cachesound.3ogg"));
-			out.flush();
-			out.writeObject(sound);
-			out.close();
-			MediaPlayer mp= new MediaPlayer();
-			mp.setOnCompletionListener(this);
-			mp.setDataSource(locget.map.getCacheDir()+File.separator+"cachesound.3ogg");
+			mp.setDataSource(f);
 			mp.prepare();
 			mp.start();
-			
-		} catch (Exception e) {
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		}
-		return true;
 	}
 	@Override
 	public void onCompletion(MediaPlayer e) {

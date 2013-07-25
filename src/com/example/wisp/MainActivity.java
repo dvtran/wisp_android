@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -36,6 +37,7 @@ public class MainActivity extends Activity {
 	boolean waitonloc=false;
 	boolean waitonupload=false;
 	boolean recording=false;
+	boolean goingtoupload=false;
 	Uploader upload= new Uploader(this);
 	GPSGrabber gpsGet;
 	Location loc=null;
@@ -53,7 +55,7 @@ public class MainActivity extends Activity {
         Button b4= (Button) findViewById(R.id.mapswitch);
         gpsGet= new GPSGrabber(this);
         b.setOnClickListener(new View.OnClickListener() {
-			MediaRecorder med= new MediaRecorder();
+			MediaRecorder med;
 			
 			@Override //This is called when the button is pressed
 			public void onClick(View v) {
@@ -65,13 +67,14 @@ public class MainActivity extends Activity {
 					toast.show();
 				}
 				else if (clicked&&!stored&&!lochere&&!waitonloc){
+					med= new MediaRecorder();
 					//sets up all the recording shit
 					Log.d("1", "1");
 					med.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
 					Log.d("1", "1");
 					med.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 					Log.d("1", "1");
-					med.setOutputFile(getCacheDir()+File.separator+"cachedsound.3gpp");
+					med.setOutputFile(getFilesDir().getAbsolutePath()+File.separator+"sound.3gpp");
 					Log.d("1", "1");
 					med.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 					Log.d("1", "1");
@@ -97,8 +100,7 @@ public class MainActivity extends Activity {
 					med.stop();
 					med.reset();
 					med.release();
-					med=new MediaRecorder();
-					playing=false;
+					recording=false;
 					playing=false;
 					waitonloc=true;
 					//uses gpsGet's get location call to get location, writes location to byte array
@@ -106,10 +108,37 @@ public class MainActivity extends Activity {
 					
 				}
 				else if (stored&&!waitonloc){
+					goingtoupload=true;
 					Log.d("atupload", "atupload");
-					waitonupload=true;
-					upload.execute(sto);
-					Log.d("1", "1");
+					AlertDialog.Builder alert = new AlertDialog.Builder(main);
+
+					alert.setTitle("Set Name");
+					alert.setMessage("Please set the name of your sound");
+
+					// Set an EditText view to get user input 
+					final EditText input = new EditText(main);
+					alert.setView(input);
+
+					alert.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+					String value = input.getText().toString();
+					upload.addName(value);
+					}
+					});
+
+					alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+					goingtoupload=false;
+					}
+					});
+
+					alert.show();
+					if (goingtoupload){
+						waitonupload=true;
+					
+						upload.execute(sto);
+						Log.d("1", "1");
+					}
 					
 
 					
@@ -128,14 +157,16 @@ public class MainActivity extends Activity {
         	@Override
 			public void onClick(View v) {
         		Log.d("1", "1");
+        		Log.d("Play", "Stored, "+stored+" recording, "+recording);
         		if (stored==true&&recording==false){
         	    MediaPlayer mp = new MediaPlayer();
         	    playing=!playing;
+        	    Log.d("Play", "Playing, "+playing);
 				if (playing==true){
 				    mp = new MediaPlayer();
 
 				    try {
-				        mp.setDataSource(getCacheDir()+File.separator+"cachedsound.3gpp");
+				        mp.setDataSource(getFilesDir().getAbsolutePath()+File.separator+"sound.3gpp");
 				        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 							
 							@Override
@@ -176,7 +207,7 @@ public class MainActivity extends Activity {
 				    public void onClick(DialogInterface dialog, int whichButton) {
 				        File f= new File(getCacheDir()+File.separator+"loc.gps");
 				        f.delete();
-				        f= new File(getCacheDir()+File.separator+"cachedsound.3gpp");
+				        f= new File(getFilesDir().getAbsolutePath()+File.separator+"sound.3gpp");
 				        f.delete();
 				        f=null;
 				    	clicked=false;
@@ -203,8 +234,15 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(main, MapShow.class);
-				MainActivity.this.startActivity(intent);
+				if (!recording){
+					Intent intent = new Intent(main, MapShow.class);
+					MainActivity.this.startActivity(intent);
+				}
+				else{
+					Toast toast = Toast.makeText(getApplicationContext(), "Can't do that while recording", Toast.LENGTH_SHORT);
+					toast.setDuration(5);
+					toast.show();
+				}
 
 				
 			}
@@ -225,11 +263,12 @@ public class MainActivity extends Activity {
     }
     protected void onLocationGet(Location l){
     	Log.d("GotToLocGet", ""+waitonloc);
+        gpsGet= new GPSGrabber(this);
     	if (waitonloc){
     	lochere=true;
     	loc=l;
     	try {
-			FileInputStream in= new FileInputStream(getCacheDir()+File.separator+"cachedsound.3gpp");
+			FileInputStream in= new FileInputStream(getFilesDir().getAbsolutePath()+File.separator+"sound.3gpp");
 			byte[] sou = IOUtils.toByteArray(in);
 			in.close();
 			Stor stor= new Stor(new SerializableLatLng(loc.getLatitude(), loc.getLongitude()), sou);
