@@ -9,7 +9,7 @@
 	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/Wisp/libs/aws-android-sdk-1.6.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/Wisp/libs/commons-io-2.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/Wisp/libs/commons-lang3-3.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/Wisp/libs/google-play-services.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DUCAStudent/workspace/Wisp/libs/google-play-services.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/Wisp/libs/httpmime-4.2.5.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
