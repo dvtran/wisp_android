@@ -32,9 +32,12 @@ public class MarkListen implements OnMarkerClickListener, OnCompletionListener {
 	}
 	@Override
 	public boolean onMarkerClick(Marker marker) {
-		SoundGetter get= new SoundGetter(this);
-		get.execute(marker);
+		marker.showInfoWindow();
 		return true;
+	}
+	public void onListen(Marker m){
+		SoundGetter get= new SoundGetter(this);
+		get.execute(m);
 	}
 	public void listen(String f){
 		MediaPlayer mp= new MediaPlayer();

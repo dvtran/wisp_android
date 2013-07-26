@@ -5,15 +5,11 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/Downloads/appengine-gcs-client-0.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="/google-play-services_lib/libs/google-play-services.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/lib/aws-android-sdk-1.6.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/commons-io-2.4/commons-io-2.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/Downloads/httpcomponents-client-4.2.5/lib/httpmime-4.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/Downloads/commons-lang3-3.1/commons-lang3-3.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/third-party/jaxp-1.4.4/jaxp-api.jar"/>
-	<classpathentry kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/third-party/sjsxp-1_0_2/sjsxp.jar"/>
-	<classpathentry kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/third-party/jackson-mapper-1.8/jackson-mapper-asl-1.8.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/DUCAStudent/workspace/aws-android-sdk-1.6.0/third-party/jackson-core-1.8/jackson-core-asl-1.8.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/Wisp/libs/appengine-gcs-client-0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/Wisp/libs/aws-android-sdk-1.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/Wisp/libs/commons-io-2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/Wisp/libs/commons-lang3-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/Wisp/libs/google-play-services.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/DUCAStudent/workspace/Wisp/libs/httpmime-4.2.5.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

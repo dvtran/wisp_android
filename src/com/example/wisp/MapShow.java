@@ -78,6 +78,7 @@ public class MapShow extends Activity implements ConnectionCallbacks, OnConnecti
 			revloc.put(map.addMarker(mark[i]), i+1);
 			Log.d("Debug", ""+i);
 		}
+        pd.cancel();
 		Log.d("Mark", "MarkerAdded");
 		Log.d("Click", "Revloc, "+revloc.keySet().size()+", "+revloc.keySet().toArray()[0].toString());
 	}
@@ -100,9 +101,12 @@ public class MapShow extends Activity implements ConnectionCallbacks, OnConnecti
 		locdate= new LocationGetter(mMapFragment, this);
 		Log.d("Loc", "here");
 		locdate.execute((Void)null);
-		map.setOnMarkerClickListener(new MarkListen(locdate));
+		MarkListen marker= new MarkListen(locdate);
+		map.setOnMarkerClickListener(marker);
+		InfoWindow info=new InfoWindow(this, marker);
+	    map.setOnInfoWindowClickListener(info);
+		map.setInfoWindowAdapter(info);
 		Log.d("Loc", "here");
-        pd.cancel();
         locclient.disconnect();
 		
 	}

@@ -56,6 +56,11 @@ public class LocationGetter extends AsyncTask<Void, Void, Void> {
             	mark=mark.position(latlng);
             	mark=mark.draggable(false);
             	mark=mark.visible(true);
+            	x=meta.getUserMetadata().get("name");
+            	if (x==null){
+            		x="Untitled Sound";
+            	}
+            	mark=mark.title(x);
             	mark=mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
     			Log.d("Mark", "Gonnaputmark");
             	marks.add(mark);
