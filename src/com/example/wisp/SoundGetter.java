@@ -3,12 +3,7 @@ package com.example.wisp;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import android.os.AsyncTask;
 import android.util.Log;
