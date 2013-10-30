@@ -7,13 +7,4 @@
   android:keepScreenOn="true"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  class="com.google.android.gms.maps.MapFragment"
-  map:cameraTilt="0"
-  map:cameraZoom="14"
-  map:mapType="normal"
-  map:uiCompass="false"
-  map:uiRotateGestures="false"
-  map:uiScrollGestures="true"
-  map:uiTiltGestures="false"
-  map:uiZoomControls="false"
-  map:uiZoomGestures="true" />
+  class="com.google.android.gms.maps.MapFragment" />

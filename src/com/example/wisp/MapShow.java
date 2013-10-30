@@ -21,6 +21,8 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -66,6 +68,14 @@ public class MapShow extends Activity implements ConnectionCallbacks, OnConnecti
 	    // Do a null check to confirm that we have not already instantiated the map.
 	    if (map == null) {
 	        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+	        UiSettings settings = map.getUiSettings();
+	        settings.setCompassEnabled(false);
+	        settings.setMyLocationButtonEnabled(true);
+	        settings.setRotateGesturesEnabled(false);
+	        settings.setScrollGesturesEnabled(true);
+	        settings.setTiltGesturesEnabled(false);
+	        settings.setZoomControlsEnabled(false);
+	        settings.setZoomGesturesEnabled(true);
 	        // Check if we were successful in obtaining the map.
 	        if (map == null) {
 	        	Log.d("Map", "MapNull");
@@ -96,7 +106,7 @@ public class MapShow extends Activity implements ConnectionCallbacks, OnConnecti
 			loc=locclient.getLastLocation();
 		}
 		Log.d("Loc", "here");
-		map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(loc.getLatitude(), loc.getLongitude())));
+		map.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(new LatLng(loc.getLatitude(), loc.getLongitude()), (float)14.0, 0, 0)));
 		Log.d("Loc", "here");
 		locdate= new LocationGetter(mMapFragment, this);
 		Log.d("Loc", "here");
